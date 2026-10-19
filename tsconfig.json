@@ -1,0 +1,61 @@
+{
+  // tsconfig.json — TypeScript コンパイラ設定（ブラウザ向けソースコード用）
+  // tsconfig.node.json は vite.config.ts（Node.js環境）用の別設定。
+  "compilerOptions": {
+    // ─── 出力ターゲット ───────────────────────────────────────────
+    // ES2020 は Navigation API 等のモダンブラウザAPIを使用するのに十分。
+    // Viteがトランスパイルするのでここでの指定はエディタの補完・検査に影響する。
+    "target": "ES2020",
+
+    // class フィールドを ECMAScript 標準の define semantics で扱う（推奨設定）
+    "useDefineForClassFields": true,
+
+    // ブラウザ環境の型定義を読み込む（DOM操作、window等）
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+
+    // ─── モジュール解決 ───────────────────────────────────────────
+    // ESNext モジュール形式を使用（import/export）
+    "module": "ESNext",
+
+    // "bundler" はVite/Rollup等のバンドラ向けの解決戦略。
+    // 拡張子省略や index.ts の自動解決などバンドラに任せる。
+    "moduleResolution": "bundler",
+
+    // .ts/.tsx の拡張子付き import を許可（バンドラ使用時の標準設定）
+    "allowImportingTsExtensions": true,
+
+    // .json ファイルを import できるようにする
+    "resolveJsonModule": true,
+
+    // 各ファイルを独立したモジュールとして扱う。
+    // Viteが各ファイルを個別にトランスパイルするため必要。
+    "isolatedModules": true,
+
+    // ─── 出力制御 ────────────────────────────────────────────────
+    // tsc はあくまで型検査用。ファイル出力はViteに任せるため false。
+    "noEmit": true,
+
+    // ─── JSX ─────────────────────────────────────────────────────
+    // React 17+ の新しいJSX変換。`import React` なしでJSXを書ける。
+    "jsx": "react-jsx",
+
+    // ─── 型チェック ───────────────────────────────────────────────
+    // strict: true は以下を一括で有効化する:
+    //   noImplicitAny, strictNullChecks, strictFunctionTypes など
+    // 型安全性を最大化するために推奨。
+    "strict": true,
+
+    // 未使用変数・パラメータの警告（開発中は false で無効化）
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+
+    // switch文の case フォールスルーをエラーにする
+    "noFallthroughCasesInSwitch": true
+  },
+  // 型検査対象のファイル・ディレクトリを指定。
+  // TypeScript はここに列挙したファイルからの import も自動的に追跡するが、
+  // エディタでの補完やプロジェクト全体の整合性検査のために src も明示する。
+  "include": ["client-entry.tsx", "src"],
+  // Specs are type-checked by tsconfig.test.json (they pull in vitest/vite typings that need Node types).
+  "exclude": ["**/*.spec.ts", "**/*.spec.tsx"]
+}
